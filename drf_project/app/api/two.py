@@ -9,11 +9,7 @@ from rest_framework import mixins
 from rest_framework.generics import GenericAPIView
 
 
-"""
-View for listing, creating, updating teachers
-"""
 class TeacherViewSet(ViewSet):
-
     """
     A simple ViewSet for listing or retrieving Teachers.
     """
@@ -51,19 +47,19 @@ class StudentModelViewSet(ModelViewSet):
     serializer_class = StudentSerializer
 
 
-"""
-Crud Operation for TeacherProfile
-"""
 class TeacherProfileModelViewSet(ModelViewSet):
+    """
+    Crud Operation for TeacherProfile
+    """
 
     queryset = TeacherProfile.objects.all()
     serializer_class = TeacherProfileSerializer
 
 
-"""
-This is how drf has created ListApiView
-"""
 class TeacherListMixinView(mixins.ListModelMixin, GenericAPIView):
+    """
+    This is how drf has created ListApiView
+    """
     queryset = Teacher.objects.all()
     serializer_class = TeacherSerializer
 
@@ -71,10 +67,10 @@ class TeacherListMixinView(mixins.ListModelMixin, GenericAPIView):
         return self.list(request, *args, **kwargs)
 
 
-"""
-This is how drf has created UpdateApiView
-"""
 class TeacherUpdateApiVIew(mixins.UpdateModelMixin, GenericAPIView):
+    """
+    This is how drf has created UpdateApiView
+    """
     queryset = Teacher.objects.all()
     serializer_class = TeacherSerializer
 

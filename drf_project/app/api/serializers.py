@@ -23,11 +23,11 @@ class TeacherSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-"""
-While Using nested serializer overrding create for creation and update for
-updating is must
-"""
 class TeacherProfileSerializer(serializers.ModelSerializer):
+    """
+    While Using nested serializer overrding create for creation and update for
+    updating is must
+    """
 
     profile = TeacherSerializer()
 
@@ -64,11 +64,11 @@ class StudentOnlySerializer(serializers.ModelSerializer):
       fields = '__all__'
 
 
-"""
-While Using nested serializer overrding create for creation and update for
-updating is must
-"""
 class StudentSerializer(serializers.ModelSerializer):
+    """
+    While Using nested serializer overrding create for creation and update for
+    updating is must
+    """
 
     address = AddressSerializer(many=True)
 

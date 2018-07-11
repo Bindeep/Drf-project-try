@@ -2,11 +2,18 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.viewsets import GenericViewSet
+
 from .serializers import AddressSerializer
 from ..models import Address
 
+GenericViewSet
+
 
 class AddressListApiView(APIView):
+    """
+    List Address
+    """
 
     def get(self, *args, **kwargs):
         queryset = Address.objects.all()
@@ -16,6 +23,10 @@ class AddressListApiView(APIView):
 
 class AddressCreateApiView(APIView):
 
+    """
+    Create New Address
+    """
+
     def post(self, request, *args, **kwargs):
         serialized_data = AddressSerializer(data=request.data)
         serialized_data.is_valid(raise_exception=True)
@@ -24,6 +35,9 @@ class AddressCreateApiView(APIView):
 
 
 class AddressDeleteView(APIView):
+    """
+    Delete Address
+    """
 
     def delete(self, *args, **kwargs):
         address_obj = get_object_or_404(Address, pk=kwargs.get('pk'))
@@ -34,6 +48,9 @@ class AddressDeleteView(APIView):
 
 
 class AddressUpdateView(APIView):
+    """
+    Update Address
+    """
 
     def patch(self, request, *args, **kwargs):
         ser = AddressSerializer(data=request.data)
