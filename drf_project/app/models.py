@@ -1,6 +1,12 @@
 from django.db import models
 
 
+"""
+Teacher Can Have many students and address are many to many field on both table(student and teacher)
+Teacher has one to one field to its related profile
+"""
+
+
 class Address(models.Model):
     street = models.CharField(max_length=255, blank=True)
     country = models.CharField(max_length=255, blank=True)

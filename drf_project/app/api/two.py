@@ -1,17 +1,17 @@
 from django.shortcuts import get_object_or_404
-from rest_framework.views import APIView
+from rest_framework.decorators import action
 from rest_framework.viewsets import ViewSet, ModelViewSet
 from rest_framework.response import Response
 from rest_framework import status
-# from .models import Address, Teacher, Student, TeacherProfile
-from .serializers import AddressSerializer, TeacherSerializer, StudentSerializer, TeacherProfileSerializer, \
-    StudentOnlySerializer
+from .serializers import AddressSerializer, TeacherSerializer, StudentSerializer, TeacherProfileSerializer
 from ..models import Address, Teacher, TeacherProfile, Student
 from rest_framework import mixins
 from rest_framework.generics import GenericAPIView
-from rest_framework.generics import ListAPIView
 
 
+"""
+View for listing, creating, updating teachers
+"""
 class TeacherViewSet(ViewSet):
 
     """
@@ -35,17 +35,12 @@ class TeacherViewSet(ViewSet):
         ser.save()
         return Response(ser.data, status.HTTP_201_CREATED)
 
-    # def update(self, request, pk=None):
-    #     import ipdb; ipdb.set_trace()
-
-
-class StudentViewSet(ViewSet):
-
-    def create(self, request, *args, **kwargs):
-        import ipdb; ipdb.set_trace()
-        ser = StudentSerializer(data=request.data)
+    def update(self, requset, *args, **kwargs):
+        instance = Teacher.objects.get(pk=kwargs.get('pk'))
+        ser = TeacherSerializer(instance, data=requset.data)
         ser.is_valid(raise_exception=True)
         ser.save()
+        return Response(ser.data)
 
 
 class StudentModelViewSet(ModelViewSet):
@@ -56,12 +51,18 @@ class StudentModelViewSet(ModelViewSet):
     serializer_class = StudentSerializer
 
 
+"""
+Crud Operation for TeacherProfile
+"""
 class TeacherProfileModelViewSet(ModelViewSet):
 
     queryset = TeacherProfile.objects.all()
     serializer_class = TeacherProfileSerializer
 
 
+"""
+This is how drf has created ListApiView
+"""
 class TeacherListMixinView(mixins.ListModelMixin, GenericAPIView):
     queryset = Teacher.objects.all()
     serializer_class = TeacherSerializer
@@ -70,7 +71,10 @@ class TeacherListMixinView(mixins.ListModelMixin, GenericAPIView):
         return self.list(request, *args, **kwargs)
 
 
-class TeacherListMixinView(mixins.UpdateModelMixin, GenericAPIView):
+"""
+This is how drf has created UpdateApiView
+"""
+class TeacherUpdateApiVIew(mixins.UpdateModelMixin, GenericAPIView):
     queryset = Teacher.objects.all()
     serializer_class = TeacherSerializer
 
@@ -96,9 +100,14 @@ class TeacherListMixinView(mixins.UpdateModelMixin, GenericAPIView):
         return self.update(request, *args, **kwargs)
 
 
-class StudentOnlyModelViewSet(ModelViewSet):
-    queryset = Student.objects.all()
-    serializer_class = StudentSerializer
+class AddressViewSet(ModelViewSet):
 
+    queryset = Address.objects.all()
+    serializer_class = AddressSerializer
 
-
+    # add extra actions that list the address related to teacher when teacher pk is passed
+    @action(methods=['get'], detail=True, url_path='teacher_address')
+    def get_teacher_address(self, request, pk=None):
+        address_qs = self.get_queryset().filter(teachers=pk)
+        ser = AddressSerializer(address_qs, many=True)
+        return Response(ser.data, status.HTTP_200_OK)
